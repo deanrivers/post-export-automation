@@ -5,7 +5,11 @@ from main import main
 import time
 
 def reset():
-    print('Reset pressed')
+    error_label['text'] = ''
+    dataexport_entry.delete(0,tk.END)
+    project_number_entry.delete(0,tk.END)  
+
+
 
 def gather_info():
     data_export_path = dataexport_entry.get()
@@ -17,19 +21,14 @@ def gather_info():
     print(returned_values)
 
     #run main and check if the info is valid for GUI
-    try:
-        if returned_values[0]==True:
-            #clear error label if it exists
-            valid_label = tk.Label(root,text=returned_values[1])
-            valid_label.config(fg="green")
-            canvas.create_window(300, 290, window=valid_label)
 
-        else:
-            error_label = tk.Label(root,text=returned_values[1])
-            error_label.config(fg="red")
-            canvas.create_window(300, 290, window=error_label)
-    except Exception as e:
-        print('Argument error:',e)
+    if returned_values[0]==True:
+        error_label['text'] = "Files were moved. OE file is cleaned in TAB. Be sure to remove apostropohes."
+        error_label['fg'] = 'green'
+    else:
+        error_label['text'] = returned_values[1]
+        error_label['fg'] = 'red'
+
     #clear fields
     dataexport_entry.delete(0,tk.END)
     project_number_entry.delete(0,tk.END)  
@@ -81,6 +80,11 @@ canvas.create_window(300,230,window=project_number_label)
 #project number input box
 project_number_entry = tk.Entry(root)
 canvas.create_window(300,260,window=project_number_entry)
+
+#error box
+error_label = tk.Label(root,text='')
+error_label.config(fg="green")
+canvas.create_window(300, 290, window=error_label)
 
 #execute button
 execute_button = tk.Button(root,text="Execute",padx=10,pady=5,fg="white",bg="#ddd",command=gather_info)
